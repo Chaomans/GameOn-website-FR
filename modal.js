@@ -33,6 +33,7 @@ const birthdate = document.querySelector("#birthdate");
 const quantity = document.querySelector("#quantity");
 const inputlocation = document.querySelector("input[name='location']");
 
+// store form data
 const data = {
   first: null,
   last: null,
@@ -41,26 +42,43 @@ const data = {
   quantity: null,
 };
 
+// filter pressed keys on first and last names
+const allowedKeysForNames = /[a-zA-Z- ]/;
+
 first.addEventListener("change", (e) => {
-  if (!isValid("first", "" + e.target.value)) {
-    invalid(0, "2 characters minimum.");
+  if (!isValid("first", e.target.value)) {
+    invalid(0, "2 lettres minimum.");
     data.first = null;
     return;
   }
   valid(0);
-  data.first = e.target.value;
+  data.first = e.target.value.trim().replace(/ {2,}/g, " ");
+  first.value = data.first;
   checkFormBeforeSubmit();
 });
 
+first.addEventListener("keypress", (e) => {
+  if (!allowedKeysForNames.test(e.key)) {
+    e.preventDefault();
+  }
+});
+
 last.addEventListener("change", (e) => {
-  if (!isValid("last", "" + e.target.value)) {
-    invalid(1, "2 characters minimum.");
+  if (!isValid("last", e.target.value)) {
+    invalid(1, "2 lettres minimum.");
     data.last = null;
     return;
   }
   valid(1);
-  data.last = e.target.value;
+  data.last = e.target.value.trim().replace(/ {2,}/g, " ");
+  last.value = data.last;
   checkFormBeforeSubmit();
+});
+
+last.addEventListener("keypress", (e) => {
+  if (!allowedKeysForNames.test(e.key)) {
+    e.preventDefault();
+  }
 });
 
 email.addEventListener("change", (e) => {
@@ -99,9 +117,9 @@ quantity.addEventListener("change", (e) => {
 const isValid = (toValidate, value) => {
   switch (toValidate) {
     case "first":
-      return value.length > 2;
+      return value.replace(/[- ]/g, "").length >= 2;
     case "last":
-      return value.length > 2;
+      return value.replace(/[- ]/g, "").length >= 2;
     case "email":
       const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
       return regex.test(value);
@@ -129,13 +147,10 @@ const valid = (i) => {
 const checkFormBeforeSubmit = () => {
   let formIsValid = true;
   for (const [_, value] of Object.entries(data)) {
-    console.log(value === null);
     if (value === null) {
       formIsValid = false;
     }
   }
-
-  console.log(formIsValid);
 
   const btnSubmit = document.querySelector(".btn-submit");
 
