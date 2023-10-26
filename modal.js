@@ -45,6 +45,9 @@ const data = {
 // filter pressed keys on first and last names
 const allowedKeysForNames = /[a-zA-Z- ]/;
 
+/* Form data validation */
+
+// First name validation
 first.addEventListener("change", (e) => {
   if (!isValid("first", e.target.value)) {
     invalid(0, "2 lettres minimum.");
@@ -57,12 +60,14 @@ first.addEventListener("change", (e) => {
   checkFormBeforeSubmit();
 });
 
+// Limiting input to letters, '-' and spaces
 first.addEventListener("keypress", (e) => {
   if (!allowedKeysForNames.test(e.key)) {
     e.preventDefault();
   }
 });
 
+// Last name validation
 last.addEventListener("change", (e) => {
   if (!isValid("last", e.target.value)) {
     invalid(1, "2 lettres minimum.");
@@ -75,12 +80,14 @@ last.addEventListener("change", (e) => {
   checkFormBeforeSubmit();
 });
 
+// Limiting input to letters, '-' and spaces
 last.addEventListener("keypress", (e) => {
   if (!allowedKeysForNames.test(e.key)) {
     e.preventDefault();
   }
 });
 
+// Email validation
 email.addEventListener("change", (e) => {
   if (!isValid("email", e.target.value)) {
     invalid(2, "exemple: 'dupont.jean@mail.com'.");
@@ -92,6 +99,7 @@ email.addEventListener("change", (e) => {
   checkFormBeforeSubmit();
 });
 
+// birthdate validation
 birthdate.addEventListener("change", (e) => {
   if (!isValid("birthdate", e.target.value)) {
     invalid(3, "Should be before today.");
@@ -103,6 +111,7 @@ birthdate.addEventListener("change", (e) => {
   checkFormBeforeSubmit();
 });
 
+// quantity validation
 quantity.addEventListener("change", (e) => {
   if (!isValid("quantity", e.target.value)) {
     invalid(4, "Can't be negative.");
@@ -114,19 +123,34 @@ quantity.addEventListener("change", (e) => {
   checkFormBeforeSubmit();
 });
 
+// validation function
 const isValid = (toValidate, value) => {
   switch (toValidate) {
     case "first":
+      // at least 2 letters
       return value.replace(/[- ]/g, "").length >= 2;
     case "last":
+      // at least 2 letters
       return value.replace(/[- ]/g, "").length >= 2;
     case "email":
       const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-      return regex.test(value);
+      if (!regex.test(value)) return false;
+
+      // avoiding nonsense ---@--.--
+      let isEmail = true;
+      const emailParts = [
+        value.split("@")[0] ?? "",
+        ...(value?.split("@")[1].split(".") ?? ""),
+      ];
+      emailParts.forEach((part) => {
+        if (!/[a-z0-9]/i.test(part)) isEmail = false;
+      });
+      return isEmail;
     case "birthdate":
       const today = Date.now();
       const bday = new Date(value);
-      return today - bday > 0;
+      return today > bday;
+
     case "quantity":
       return value >= 0;
     default:
