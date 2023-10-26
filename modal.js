@@ -11,19 +11,33 @@ function editNav() {
 const modalbg = document.querySelector(".bground");
 const modalBtn = document.querySelectorAll(".modal-btn");
 const formData = document.querySelectorAll(".formData");
+const done = document.querySelector(".done");
+
+// form
+const form = document.querySelector("form");
 
 // launch modal event
 modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
 
 // launch modal form
 function launchModal() {
-  modalbg.style.display = "block";
+  modalbg.classList.toggle("hidden");
+  checkFormBeforeSubmit();
 }
 
 // close modal form
 function closeModal() {
-  modalbg.style.display = "none";
+  modalbg.classList.toggle("hidden");
+  form.classList.remove("fadeout");
+  done.classList.add("hidden");
 }
+const closeCross = document.querySelector(".close");
+const closeBtn = document.querySelector(".close-btn");
+[closeBtn, closeCross].forEach((elem) => {
+  elem.addEventListener("click", () => {
+    closeModal();
+  });
+});
 
 // formData Elements
 const first = document.querySelector("#first");
@@ -31,7 +45,9 @@ const last = document.querySelector("#last");
 const email = document.querySelector("#email");
 const birthdate = document.querySelector("#birthdate");
 const quantity = document.querySelector("#quantity");
-const inputlocation = document.querySelector("input[name='location']");
+const locations = document.querySelectorAll("input[name='location']");
+const conditions = document.querySelector("#checkbox1");
+const mailing = document.querySelector("#checkbox2");
 
 // store form data
 const data = {
@@ -40,6 +56,9 @@ const data = {
   email: null,
   birthdate: null,
   quantity: null,
+  location: null,
+  conditions: false,
+  mailing: false,
 };
 
 // filter pressed keys on first and last names
@@ -102,7 +121,7 @@ email.addEventListener("change", (e) => {
 // birthdate validation
 birthdate.addEventListener("change", (e) => {
   if (!isValid("birthdate", e.target.value)) {
-    invalid(3, "Should be before today.");
+    invalid(3, "Entrez une date valide.");
     data.birthdate = null;
     return;
   }
@@ -114,13 +133,42 @@ birthdate.addEventListener("change", (e) => {
 // quantity validation
 quantity.addEventListener("change", (e) => {
   if (!isValid("quantity", e.target.value)) {
-    invalid(4, "Can't be negative.");
+    invalid(4, "0 si aucune participation précédente.");
     data.quantity = null;
     return;
   }
   valid(4);
   data.quantity = e.target.value;
   checkFormBeforeSubmit();
+});
+
+const allowedLocations = [
+  "new york",
+  "san francisco",
+  "seattle",
+  "chicago",
+  "boston",
+  "portland",
+];
+
+locations.forEach((location) => {
+  location.addEventListener("click", (e) => {
+    if (!isValid("location", e.target.value)) {
+      //TODO ?
+      return;
+    }
+    data.location = e.target.value;
+    checkFormBeforeSubmit();
+  });
+});
+
+conditions.addEventListener("click", (e) => {
+  data.conditions = e.target.checked;
+  checkFormBeforeSubmit();
+});
+
+mailing.addEventListener("click", (e) => {
+  data.mailing = e.target.checked;
 });
 
 // validation function
@@ -147,31 +195,48 @@ const isValid = (toValidate, value) => {
       });
       return isEmail;
     case "birthdate":
+      // selected date should not be in the future
+      // since there is no minimal age
       const today = Date.now();
       const bday = new Date(value);
       return today > bday;
 
     case "quantity":
+      // cannot be negative
       return value >= 0;
+
+    case "location":
+      // Choosed location shoul exist
+      // Prevent from user changing the HTML
+      return allowedLocations.includes(value?.toLowerCase() ?? "");
     default:
       break;
   }
 };
 
+// Display message if invalid
 const invalid = (i, msg) => {
   formData[i].setAttribute("data-error", msg);
   formData[i].setAttribute("data-error-visible", "true");
 };
 
+// Remove error message if valid
 const valid = (i) => {
   formData[i].removeAttribute("data-error");
   formData[i].removeAttribute("data-error-visible");
 };
 
+// Check `data` to see if every inputs are valid
+// if NOK, submit button is disabled
+// if OK, submit button is not disabled
 const checkFormBeforeSubmit = () => {
   let formIsValid = true;
-  for (const [_, value] of Object.entries(data)) {
+  for (const [key, value] of Object.entries(data)) {
     if (value === null) {
+      formIsValid = false;
+      break;
+    }
+    if (key === "conditions" && !value) {
       formIsValid = false;
     }
   }
@@ -185,3 +250,31 @@ const checkFormBeforeSubmit = () => {
 
   btnSubmit.disabled = false;
 };
+
+// Reset data to default value
+const resetData = (d) => {
+  d.first = null;
+  d.last = null;
+  d.email = null;
+  d.birthdate = null;
+  d.quantity = null;
+  d.location = null;
+  d.conditions = false;
+  d.mailing = false;
+};
+
+// Prevent page reload
+// Show data in console
+// Reset form and data
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const date = new Date(Date.now());
+  console.info(
+    `[${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}]: data send sucessfully !`
+  );
+  console.table(data);
+  form.reset();
+  resetData(data);
+  form.classList.add("fadeout");
+  done.classList.remove("hidden");
+});

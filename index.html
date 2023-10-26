@@ -52,15 +52,13 @@
         </button>
       </div>
 
-      <div class="bground">
+      <div class="bground hidden">
         <div class="content">
-          <span class="close" onclick="closeModal()"></span>
+          <span class="close"></span>
           <div class="modal-body">
             <form
               name="reserve"
-              action="index.html"
-              method="get"
-              onsubmit="return validate();"
+              action="#"
             >
               <div
                 class="formData">
@@ -185,11 +183,10 @@
                   class="checkbox-input"
                   type="checkbox"
                   id="checkbox1"
-                  checked
                 />
                 <label class="checkbox2-label" for="checkbox1" required>
                   <span class="checkbox-icon"></span>
-                  J'ai lu et accepté les conditions d'utilisation.
+                  <span class="required">* </span>J'ai lu et accepté les conditions d'utilisation.
                 </label>
                 <br>
                 <input class="checkbox-input" type="checkbox" id="checkbox2" />
@@ -207,6 +204,10 @@
                 disabled
               />
             </form>
+            <div class="done hidden">
+              <p>Merci pour<br>votre participation</p>
+              <button class="close-btn button">Fermer</button>
+            </div>
           </div>
         </div>
       </div>

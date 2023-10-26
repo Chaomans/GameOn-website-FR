@@ -14,7 +14,7 @@ body {
   margin: 0;
   display: flex;
   flex-direction: column;
-  background-image: url("background.png");
+  /* background-image: url("background.png"); */
   font-family: var(--font-default);
   font-size: 18px;
   max-width: 1300px;
@@ -160,7 +160,7 @@ main {
 }
 
 .bground {
-  display: none;
+  display: block;
   position: fixed;
   z-index: 1;
   left: 0;
@@ -298,6 +298,10 @@ input[data-error]::after {
   left: 21%;
   top: 19%;
 }
+.required {
+  color: #fe142f;
+  font-size: 15px;
+}
 .close {
   position: absolute;
   right: 15px;
@@ -307,6 +311,7 @@ input[data-error]::after {
   opacity: 1;
   cursor: pointer;
   transform: scale(0.7);
+  z-index: 100;
 }
 .close:before,
 .close:after {
@@ -324,7 +329,8 @@ input[data-error]::after {
   transform: rotate(-45deg);
 }
 .btn-submit,
-.btn-signup {
+.btn-signup,
+.close-btn {
   background: #fe142f;
   display: block;
   margin: 0 auto;
@@ -338,6 +344,7 @@ input[data-error]::after {
 
 .btn-submit:disabled {
   background: #333;
+  cursor: default;
 }
 /* custom select styles */
 .custom-select {
@@ -484,6 +491,70 @@ footer {
   padding-right: 2vw;
   margin: 0 20px;
 }
+
+.fadeout {
+  animation: fadeout 0.25s ease-in 0.25s forwards;
+}
+
+.done {
+  display: flex;
+  position: absolute;
+  color: #fff;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  justify-content: center;
+  align-items: center;
+  animation: fadein 0.25s ease-in 0.5s forwards;
+  opacity: 0;
+}
+
+.done p {
+  text-align: center;
+  display: block;
+  font-weight: 400;
+  font-size: 36px;
+  font-family: "DM Sans", sans-serif;
+  line-height: 51.34px;
+}
+
+.done .close-btn {
+  position: absolute;
+  bottom: 30px;
+  align-self: center;
+}
+
+.hidden {
+  display: none;
+}
+
+form {
+  position: relative;
+}
+
+@keyframes fadeout {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@keyframes fadein {
+  0% {
+    opacity: 0;
+    display: flex;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
 @media screen and (max-width: 800px) {
   .hero-section {
     display: block;
