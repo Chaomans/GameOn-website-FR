@@ -71,6 +71,7 @@ first.addEventListener("change", (e) => {
   if (!isValid("first", e.target.value)) {
     invalid(0, "2 lettres minimum.");
     data.first = null;
+    checkFormBeforeSubmit();
     return;
   }
   valid(0);
@@ -91,6 +92,7 @@ last.addEventListener("change", (e) => {
   if (!isValid("last", e.target.value)) {
     invalid(1, "2 lettres minimum.");
     data.last = null;
+    checkFormBeforeSubmit();
     return;
   }
   valid(1);
@@ -111,6 +113,7 @@ email.addEventListener("change", (e) => {
   if (!isValid("email", e.target.value)) {
     invalid(2, "exemple: 'dupont.jean@mail.com'.");
     data.email = null;
+    checkFormBeforeSubmit();
     return;
   }
   valid(2);
@@ -123,6 +126,7 @@ birthdate.addEventListener("change", (e) => {
   if (!isValid("birthdate", e.target.value)) {
     invalid(3, "Entrez une date valide.");
     data.birthdate = null;
+    checkFormBeforeSubmit();
     return;
   }
   valid(3);
@@ -135,6 +139,7 @@ quantity.addEventListener("change", (e) => {
   if (!isValid("quantity", e.target.value)) {
     invalid(4, "0 si aucune participation précédente.");
     data.quantity = null;
+    checkFormBeforeSubmit();
     return;
   }
   valid(4);
